@@ -1,0 +1,37 @@
+{
+        "builders": [
+                {
+                        "type": "amazon-chroot",
+                        "access_key": "AAAAAAAA",
+                        "secret_key": "BBBBBBBB",
+                        "ami_regions": [ "ap-southeast-2" ],
+                        "source_ami": "ami-e2021d81",
+                        "ami_name": "MICROSERVICE {{timestamp}}",
+                        "ami_virtualization_type": "hvm",
+                        "enhanced_networking": true,
+                        "tags": {
+                                "Name": "MICROSERVICE {{timestamp}}",
+                                "OS_Version": "AWS linux"
+                        }
+                }
+        ],
+        "provisioners": [
+                {
+            			"type": "file",
+            			"source": "/home/jenkins/workspace/PIPELINENAME/",
+            			"destination": "/var/www"
+		            },
+                {
+                        "type": "shell",
+                        "inline": [
+                          "echo '##### Install Node + Pm2 + Utils + AWS tools #####'",
+                          "useradd -d /home/ubuntu -m ubuntu",
+                          "usermod -s /bin/bash ubuntu",
+                          "curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -",
+                          "apt-get install -y nodejs unzip python build-essential python-setuptools",
+                          "npm install -g pm2",
+                          "easy_install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz"
+                        ]
+                }
+        ]
+	}
